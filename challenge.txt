@@ -1,0 +1,39 @@
+Terraform Challenge for Cloud Engineers
+Part 1: Set up a new cloud infrastructure
+You’ve just started your new job as a Cloud Engineer at Lufthansa Technik. For a demo project you are kindly asked to set up a new cloud infrastructure that facilitates the processing of sensor data and provides a secure environment for our engineers.
+For this setup, you need to create a GCP project hosting a Cloud Run service that will accept authenticated requests and in return will send a report with sensor data to a topic. Since a continuous time series is required, those requests should be scheduled.
+Data Engineers also need to be able to deploy Dataflow jobs, as they want to stream data from this topic into BigQuery.
+Please implement the following things:
+• Set up a GCP project
+• Deploy a PubSub topic “sensor-data” that will receive sensor data
+• Build an image from the code provided under “images/sensor” and store it in Artifact
+Registry. Whenever the source code changes, the image needs to be rebuilt.
+• Deploy a secure Cloud Run Service using the “sensor”-image (use tag latest) for our two
+sensors “sensor-1” and “sensor-2” in separate regions (“europe-west3” and “europe- west4”). Whenever the source code or image changes, the service needs a new revision. The image requires two environment variables:
+o TOPIC_PATH:ThePubSubtopic“sensor-data"(fullpath)
+o SENSOR_ID:TheIDofthesensor(“sensor-1”or“sensor-2”)
+• Make sure that each Cloud Run service is requested every 5min by making an authenticated
+HTTP request to the endpoint “/send_report”. This request should be executed by a
+designated service account, which can only invoke the respective Cloud Run service.
+• Set up a VPC and subnetwork(s) that enables data engineers to run Data Flow jobs
+General requirements & hints:
+• Everything as code (DRY)
+• Allowed tools: terraform (or wrappers if necessary), gcloud
+• Infrastructure should be secure
+• Follow the principle of least privilege
+• Multistage: There should be an easy way to deploy the infrastructure to other stages (prod,
+non-prod)
+• Don’t die in perfection: We’re happy to discuss your solution and ideas for further
+improvements.
+
+Part 2: Design a CI/CD pipeline
+After everything is set up, the demo has been a full success. Now you’re hearing from stakeholders that they wish to add some automation since new stories are already planned and additional developers will be involved in this project. Your suggestion is to create a CI/CD pipeline for the deployment of this infrastructure and to standardize the process, avoid manual errors and reduce time to production. To make your ideas easily accessible, please create an architecture diagram containing an abstract overview of the CI/CD pipeline.
+Requirements:
+• Multiple developers can collaborate on the Terraform code
+• Developers should be able to see the impact of their code and have a way to test it
+• Deployments to production require pull requests and are done with a privileged service
+account
+• There is a non-prod and a prod stage
+• The diagram doesn’t need to be perfectly formatted, it should just be clear what happens in
+which step
+• You can make reasonable assumptions whenever you think the requirements are not clear
