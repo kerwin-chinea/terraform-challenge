@@ -9,21 +9,27 @@ flowchart TD
         D --> E[Terraform Plan]
     end
 
+    subgraph PR_NONPROD["Non-Prod PR Process"]
+        E --> J1[Create Non-Prod PR]
+        J1 --> K1[Code Review]
+        K1 --> L1[Approval Required]
+    end
+
     subgraph NONPROD["Non-Prod Environment"]
-        E --> F[Build Docker Image]
+        L1 --> F[Build Docker Image]
         F --> G[Test Image]
         G --> H[Deploy to Non-Prod]
         H --> I[Integration Tests]
     end
 
-    subgraph PR["Pull Request Process"]
-        I --> J[Create PR]
-        J --> K[Code Review]
-        K --> L[Approval Required]
+    subgraph PR_PROD["Production PR Process"]
+        I --> J2[Create Prod PR]
+        J2 --> K2[Code Review]
+        K2 --> L2[Approval Required]
     end
 
     subgraph PROD["Production Environment"]
-        L --> M[Merge to Main]
+        L2 --> M[Merge to Main]
         M --> N[Terraform Plan Prod]
         N --> O[Security Check]
         O --> P[Deploy to Prod]
@@ -37,8 +43,9 @@ flowchart TD
     classDef prod fill:#dae8fc,stroke:#4c6ef5,stroke-width:2px;
 
     class DEV dev;
+    class PR_NONPROD pr;
     class NONPROD nonprod;
-    class PR pr;
+    class PR_PROD pr;
     class PROD prod;
 ```
 
@@ -51,18 +58,23 @@ flowchart TD
    - Verificación de formato Terraform
    - Plan de Terraform
 
-2. **Ambiente Non-Prod**:
+2. **Proceso PR Non-Prod**:
+   - Creación de PR para non-prod
+   - Code review inicial
+   - Aprobación para non-prod
+
+3. **Ambiente Non-Prod**:
    - Build de imagen Docker
    - Tests de la imagen
    - Despliegue a non-prod
    - Tests de integración
 
-3. **Proceso de Pull Request**:
-   - Creación de PR
-   - Code review
+4. **Proceso PR Producción**:
+   - Creación de PR para prod
+   - Code review exhaustivo
    - Aprobación requerida
 
-4. **Ambiente de Producción**:
+5. **Ambiente de Producción**:
    - Merge a main
    - Plan de Terraform para prod
    - Verificación de seguridad
