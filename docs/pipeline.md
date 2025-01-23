@@ -69,4 +69,3 @@ flowchart TD
    - Despliegue a producción
    - Monitoreo
 
-¿Quieres que agregue o modifique alguna parte del diagrama?
