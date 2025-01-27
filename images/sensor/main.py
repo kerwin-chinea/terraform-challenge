@@ -23,7 +23,7 @@ def index():
     return f"AVI Aircraft Sensor, Aviatar, id={SENSOR_ID}"
 
 
-@app.route("/send_report")
+@app.route("/send_report", methods=["POST"])
 def send_report():
     report = get_report()
     logging.info(f"Received sensor report: {report}")

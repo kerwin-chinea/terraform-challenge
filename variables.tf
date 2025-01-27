@@ -9,8 +9,8 @@ variable "region" {
 }
 
 variable "environment" {
-  description = "Environment (prod or non-prod)"
-  type        = string
+  description = "Environment (prod, staging, dev)"
+  default     = terraform.workspace
 }
 
 variable "sensors" {

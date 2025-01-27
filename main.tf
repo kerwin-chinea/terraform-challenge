@@ -24,13 +24,18 @@ module "vpc" {
   subnet_cidr = "10.0.0.0/24"
 }
 
+locals {
+  project_id = terraform.workspace == "prod" ? "prod-project-id" : "non-prod-project-id"
+}
+
 module "cloudrun" {
   source   = "./modules/cloudrun"
   for_each = var.sensors
 
   sensor_id            = each.key
-  region              = each.value.region
-  environment         = var.environment
-  topic_path          = module.pubsub.topic_path
+  region               = each.value.region
+  environment          = var.environment
+  topic_path           = module.pubsub.topic_path
   artifact_registry_url = module.artifact_registry.repository_url
+  project_id           = local.project_id
 } 

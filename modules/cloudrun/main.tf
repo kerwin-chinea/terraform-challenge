@@ -3,8 +3,14 @@ resource "google_service_account" "cloudrun_invoker" {
   display_name = "Cloud Run Invoker for ${var.sensor_id}"
 }
 
+resource "google_project_iam_member" "cloudrun_token_creator" {
+  project = var.project_id
+  role    = "roles/iam.serviceAccountTokenCreator"
+  member  = "serviceAccount:${google_service_account.cloudrun_invoker.email}"
+}
+
 resource "google_cloud_run_service" "sensor" {
-  name     = var.sensor_id
+  name     = "${terraform.workspace}-${var.sensor_id}"
   location = var.region
 
   template {
@@ -40,9 +46,12 @@ resource "google_cloud_scheduler_job" "sensor_job" {
   http_target {
     http_method = "POST"
     uri         = "${google_cloud_run_service.sensor.status[0].url}/send_report"
+
+    #TODO: ADD RETRIES, by default it implements exponential backoff
     
     oidc_token {
       service_account_email = google_service_account.cloudrun_invoker.email
+      audience              = google_cloud_run_service.sensor.status[0].url
     }
   }
 } 
